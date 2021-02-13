@@ -4,18 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.util.TimeFormatException;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -30,7 +26,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputLayout;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,8 +37,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
@@ -112,7 +105,12 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject location = new JSONObject(jsonObject.getString("location"));
                     message = condition.getString("text");
                     icon = condition.getString("icon");
-                    loc = location.getString("name") + ", " + location.getString("region") + ", " + location.getString("country");
+                    String name = location.getString("name"), region = location.getString("region"), country = location.getString("country");
+                    if (region.equals("")) {
+                        loc = name + ", " + country;
+                    }else{
+                        loc = name +", " + region + ", " + country;
+                    }
                     time = Integer.parseInt(location.getString("localtime").split(" ")[1].split(":")[0]);
                     tempC = current.getString("temp_c") + "°";
                     tempF = current.getString("temp_f") + "°";
@@ -149,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
         textInputLayout = findViewById(R.id.filledTextField);
         editText = findViewById(R.id.editText);
-        button = findViewById(R.id.button);
+        button = findViewById(R.id.goButton);
         button.setEnabled(false);
         resultTextView = findViewById(R.id.resultTextView);
         locTextView = findViewById(R.id.locTextView);

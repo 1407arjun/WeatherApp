@@ -6,7 +6,7 @@
         <item name="colorPrimaryVariant">#5b5bbd</item>
         <item name="colorOnPrimary">@color/black</item>
         <item name="mainBgColor">@color/blue</item>
-        <item name="layoutBgColor">@color/light_blue</item>
+        <item name="layoutBgColor">#52064069</item>
         <item name="backgroundImg">@drawable/night</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/light_blue</item>

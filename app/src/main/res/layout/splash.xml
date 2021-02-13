@@ -7,8 +7,10 @@
     android:layout_height="match_parent">
 
     <LinearLayout
+        android:id="@+id/titleLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:alpha="0"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -16,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/titleTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
@@ -26,11 +28,11 @@
             android:text="Whats the Weather"
             android:textAlignment="gravity"
             android:textAllCaps="true"
-            android:textSize="32sp"
+            android:textSize="28sp"
             android:textStyle="bold|italic" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/subtitleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
@@ -45,12 +47,12 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/creditsTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="16dp"
-        android:fontFamily="@font/allura"
+        android:fontFamily="@font/quando"
         android:gravity="center"
         android:text="Made with ♥ by Arjun"
         android:textAlignment="gravity"
@@ -61,22 +63,13 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="411dp"
-        android:layout_height="208dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/bgwhite" />
-
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:id="@+id/mainIcon"
+        android:layout_width="170dp"
+        android:layout_height="170dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="264dp"
+        android:layout_marginTop="280dp"
         android:layout_marginEnd="10dp"
+        android:alpha="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"

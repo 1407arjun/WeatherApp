@@ -36,7 +36,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/logoImageView"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_gravity="center"
@@ -44,7 +44,7 @@
             app:srcCompat="@drawable/icon" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/headerTextView"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_gravity="center"
@@ -91,15 +91,17 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
+            android:background="@drawable/shape"
             android:checked="false"
-            android:fontFamily="@font/mclaren"
+            android:fontFamily="@font/russo_one"
             android:gravity="center"
+            android:padding="10dp"
             android:text="Unit °C "
             android:textSize="20sp"
             app:useMaterialThemeColors="true" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/goButton"
             android:layout_width="229dp"
             android:layout_height="60dp"
             android:layout_gravity="center"
@@ -138,27 +140,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="-20dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="-10dp"
+            android:layout_marginRight="15dp"
             android:background="#00FFFFFF"
             android:fontFamily="@font/fredoka_one"
             android:text="Clear"
             android:textAlignment="gravity"
             android:textColor="@android:color/white"
-            android:textSize="40sp" />
+            android:textSize="36sp" />
 
         <TextView
             android:id="@+id/locTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="15dp"
             android:layout_marginTop="16dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="15dp"
             android:background="#00FFFFFF"
-            android:drawableStart="@drawable/round_location_on_24"
-            android:drawablePadding="2dp"
             android:fontFamily="@font/happy_monkey"
             android:gravity="center"
             android:text="Mumbai, Maharashtra, India"
@@ -172,15 +172,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="15dp"
             android:background="#00FFFFFF"
             android:fontFamily="@font/audiowide"
             android:text="29"
             android:textAlignment="gravity"
             android:textColor="@android:color/white"
-            android:textSize="70sp" />
+            android:textSize="75sp" />
 
     </LinearLayout>
 
