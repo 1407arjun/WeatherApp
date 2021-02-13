@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="layoutBgColor" format="color"/>
+    <attr name="mainBgColor" format="color"/>
+    <attr name="altTextColor" format="color"/>
+    <attr name="backgroundImg" format="reference"/>
+</resources>
