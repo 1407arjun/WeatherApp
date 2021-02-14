@@ -1,10 +1,12 @@
 package com.example.weatherapp;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.animation.Animator;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -159,12 +161,20 @@ public class MainActivity extends AppCompatActivity {
         manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         exitButton = findViewById(R.id.floatingActionButton);
 
+        linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                manager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+                editText.clearFocus();
+            }
+        });
+
         unitSwitch = findViewById(R.id.unitSwitch);
         unitSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                manager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-                editText.clearFocus();
+                //manager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+                //editText.clearFocus();
                 if (isChecked){
                     unitSwitch.setText("Unit °F ");
                 }else{
@@ -219,8 +229,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void weatherSetter(){
-        exitButton.setVisibility(View.VISIBLE);
         if (message != "" &&  icon != ""){
+            editText.setEnabled(false);
             manager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
 
             ImageDownloader imageDownloader = new ImageDownloader();
@@ -252,22 +262,24 @@ public class MainActivity extends AppCompatActivity {
             }
 
             int x = linearLayout.getWidth()/2;
-            int y = linearLayout.getBottom();
+            int y = linearLayout.getBottom() - 20;
 
             int startRadius = 0;
             int endRadius = (int) Math.hypot(constraintLayout.getWidth(), constraintLayout.getHeight());
 
             Animator anim = ViewAnimationUtils.createCircularReveal(weatherLayout, x, y, startRadius, endRadius);
             weatherLayout.setVisibility(View.VISIBLE);
-            anim.setDuration(600);
+            anim.setDuration(500);
             isOpen = true;
             anim.start();
+            exitButton.setVisibility(View.VISIBLE);
         }
     }
     public void close(View view){
         if (isOpen){
+            editText.setEnabled(true);
             int x = linearLayout.getWidth()/2;
-            int y = linearLayout.getBottom();
+            int y = linearLayout.getBottom() - 20;
 
             int endRadius = 0;
             int startRadius = (int) Math.hypot(constraintLayout.getWidth(), constraintLayout.getHeight());
@@ -298,6 +310,35 @@ public class MainActivity extends AppCompatActivity {
             isOpen = false;
             anim.start();
             exitButton.setVisibility(View.INVISIBLE);
+        }
+    }
+    @Override
+    public void onBackPressed()
+    {
+        if (isOpen){
+            View view = findViewById(R.id.floatingActionButton);
+            close(view);
+        }else{
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setTitle("Exit Application?");
+            alertDialogBuilder
+                    .setMessage("Leaving so early :(, see you soon!")
+                    .setCancelable(true)
+                    .setPositiveButton("Yes",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    moveTaskToBack(true);
+                                    android.os.Process.killProcess(android.os.Process.myPid());
+                                    System.exit(1);
+                                }
+                            })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
         }
     }
 }
