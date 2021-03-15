@@ -23,10 +23,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputLayout;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,7 +41,15 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -56,90 +66,38 @@ public class MainActivity extends AppCompatActivity {
     SwitchMaterial unitSwitch;
     InputMethodManager manager;
     FloatingActionButton exitButton;
-    String loc = "", icon = "", tempC = "", tempF = "", message = "";
-    int time = 0;
     boolean isOpen = false;
 
-    public class DownloadTask extends AsyncTask<String, Void, String>{
-
-        @Override
-        protected String doInBackground(String... urls) {
-
-            try {
-                URL url = new URL(urls[0]);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                InputStream in = connection.getInputStream();
-                String result = "";
-                InputStreamReader reader = new InputStreamReader(in);
-                int data = reader.read();
-                while (data != -1) {
-                    char current = (char) data;
-                    result += current;
-                    data = reader.read();
-                }
-                return result;
-            }catch (MalformedURLException e) {
-                Log.i("Error", "102");
-                return "0";
-                //e.printStackTrace();
-            } catch (IOException e) {
-                Log.i("Error", "103");
-                return "1";
-                //e.printStackTrace();
-            }
-        }
-        @Override
-        protected void onPostExecute(String result){
-            super.onPostExecute(result);
-            if (result.equals("0")){
-                textInputLayout.setError("Invalid location, Error 102");
-                resultTextView.setText("");
-            }else if (result.equals("1")){
-                textInputLayout.setError("Invalid location, Error 103");
-                resultTextView.setText("");
-            }else{
-                Log.i("Weather", result);
-                textInputLayout.setError(null);
-                try {
-                    JSONObject jsonObject = new JSONObject(result);
-                    JSONObject current = new JSONObject(jsonObject.getString("current"));
-                    JSONObject condition = new JSONObject(current.getString("condition"));
-                    JSONObject location = new JSONObject(jsonObject.getString("location"));
-                    message = condition.getString("text");
-                    icon = condition.getString("icon");
-                    String name = location.getString("name"), region = location.getString("region"), country = location.getString("country");
-                    if (region.equals("")) {
-                        loc = name + ", " + country;
-                    }else{
-                        loc = name +", " + region + ", " + country;
-                    }
-                    time = Integer.parseInt(location.getString("localtime").split(" ")[1].split(":")[0]);
-                    tempC = current.getString("temp_c") + "°";
-                    tempF = current.getString("temp_f") + "°";
-                    weatherSetter();
-                } catch (JSONException e) {
-                    Log.i("Error", "104");
-                    textInputLayout.setError("Could not retrieve weather info. Try again, Error 104");
-                    resultTextView.setText("");
-                    //e.printStackTrace();
-                }
-            }
-        }
-    }
-
     public void findWeather(View view){
-        DownloadTask task = new DownloadTask();
-        String urlEncoder;
         try {
-            urlEncoder = URLEncoder.encode(editText.getText().toString(), "UTF-8");
-            task.execute("https://api.weatherapi.com/v1/current.json?key=ee1e6fc97eae412a8f3125336211202&q=" + urlEncoder);
+            String urlEncoder = URLEncoder.encode(editText.getText().toString(), "UTF-8");
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(API.BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            API myApi = retrofit.create(API.class);
+            Call<JSONProcess> call = myApi.getWeather("ee1e6fc97eae412a8f3125336211202", urlEncoder);
+            call.enqueue(new Callback<JSONProcess>() {
+                @Override
+                public void onResponse(Call<JSONProcess> call, Response<JSONProcess> response) {
+                    textInputLayout.setError(null);
+                    JSONProcess weatherInfo = response.body();
+                    assert weatherInfo != null;
+                    weatherSetter(weatherInfo.getCurrent().getTempC(), weatherInfo.getCurrent().getTempF(), weatherInfo.getCurrent().getCondition().getIcon(), weatherInfo.getCurrent().getCondition().getText(), weatherInfo.getLocation().getName(), weatherInfo.getLocation().getRegion(), weatherInfo.getLocation().getCountry(), weatherInfo.getLocation().getLocaltime());
+                    Log.i("info", weatherInfo.getLocation().getName());
+                }
+                @Override
+                public void onFailure(Call<JSONProcess> call, Throwable t) {
+                    textInputLayout.setError("Invalid location, Error 102");
+                    Log.i("error", t.getMessage());
+                }
+            });
         }catch (UnsupportedEncodingException e) {
             Log.i("Error", "101");
             textInputLayout.setError("Invalid Location, Error 101");
             resultTextView.setText("");
             //e.printStackTrace();
         }
-
     }
 
     @Override
@@ -206,49 +164,23 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public class ImageDownloader extends AsyncTask<String, Void, Bitmap>{
-
-        @Override
-        protected Bitmap doInBackground(String... urls) {
-            try {
-                URL url = new URL(urls[0]);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
-                InputStream inputStream = connection.getInputStream();
-                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                return bitmap;
-            } catch (MalformedURLException e) {
-                Log.i("Error", "105");
-                //e.printStackTrace();
-            } catch (IOException e) {
-                Log.i("Error", "106");
-                //e.printStackTrace();
-            }
-            return null;
-        }
-    }
-
-    public void weatherSetter(){
+    public void weatherSetter(Double tempC, Double tempF, String icon, String message, String name, String region, String country, String timestr){
         if (message != "" &&  icon != ""){
             editText.setEnabled(false);
             manager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
 
-            ImageDownloader imageDownloader = new ImageDownloader();
-            Bitmap weatherIcon;
-            try {
-                weatherIcon = imageDownloader.execute("https:" + icon).get();
-                iconImageView.setImageBitmap(weatherIcon);
-            } catch (ExecutionException e) {
-                Log.i("Error", "107");
-                //e.printStackTrace();
-            } catch (InterruptedException e) {
-                Log.i("Error", "108");
-                //e.printStackTrace();
-            }
-            if (unitSwitch.isChecked()){
-                tempTextView.setText(tempF);
+            Picasso.with(MainActivity.this).load("https:" + icon).into(iconImageView);
+            String loc;
+            if (region.equals("")) {
+                loc = name + ", " + country;
             }else{
-                tempTextView.setText(tempC);
+                loc = name +", " + region + ", " + country;
+            }
+            int time = Integer.parseInt(timestr.split(" ")[1].split(":")[0]);
+            if (unitSwitch.isChecked()){
+                tempTextView.setText(tempF + "°");
+            }else{
+                tempTextView.setText(tempC+ "°");
             }
             resultTextView.setText(message);
             locTextView.setText(loc);
