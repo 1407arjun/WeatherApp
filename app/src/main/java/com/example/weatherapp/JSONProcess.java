@@ -8,6 +8,7 @@ public class JSONProcess {
     @SerializedName("location")
     @Expose
     private Location location;
+
     @SerializedName("current")
     @Expose
     private Current current;

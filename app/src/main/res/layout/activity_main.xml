@@ -111,7 +111,7 @@
             android:fontFamily="@font/fredoka_one"
             android:gravity="center"
             android:onClick="findWeather"
-            android:text="Show Weather"
+            android:text="Show The Weather"
             app:cornerRadius="25dp" />
 
     </LinearLayout>

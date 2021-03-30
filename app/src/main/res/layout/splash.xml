@@ -25,7 +25,7 @@
             android:layout_marginEnd="50dp"
             android:fontFamily="@font/audiowide"
             android:gravity="center"
-            android:text="Whats the Weather"
+            android:text="What's the Weather"
             android:textAlignment="gravity"
             android:textAllCaps="true"
             android:textSize="28sp"

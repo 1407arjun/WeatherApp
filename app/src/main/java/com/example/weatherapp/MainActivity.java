@@ -60,12 +60,14 @@ public class MainActivity extends AppCompatActivity {
     ImageView iconImageView;
     TextView locTextView;
     TextView tempTextView;
+
     ConstraintLayout constraintLayout;
     LinearLayout linearLayout;
     LinearLayout weatherLayout;
     SwitchMaterial unitSwitch;
     InputMethodManager manager;
     FloatingActionButton exitButton;
+
     boolean isOpen = false;
 
     public void findWeather(View view){
